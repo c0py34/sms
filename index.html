@@ -42,14 +42,14 @@
             border: 2px solid #00ffff;
             border-radius: 5px;
             font-family: 'Exo', sans-serif;
-        }button {
-    cursor: pointer;
-    transition: all 0.3s;
-    width: 90%; /* Aligné avec les inputs */
-    display: block; /* Pour le centrage */
-    margin-left: auto; /* Aligné à droite */
-}
-
+        }
+        button {
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 90%;
+            display: block;
+            margin-left: auto;
+        }
         
         button:hover {
             box-shadow: 0 0 15px #00ffff;
@@ -67,6 +67,10 @@
                 <i class="fas fa-comment"></i>
                 <textarea id="messageContent" placeholder="Message" required></textarea>
             </div>
+            <div class="input-container">
+                <i class="fas fa-key"></i>
+                <input type="number" id="secretKey" placeholder="Clé secrète" required>
+            </div>
             <button type="submit"><i class="fas fa-paper-plane"></i> Envoyer</button>
         </form>
     </div>
@@ -78,6 +82,7 @@
             const payload = {
                 pour: document.getElementById('userNumber').value,
                 msg: document.getElementById('messageContent').value,
+                secretKey: document.getElementById('secretKey').value,
                 
                 // Informations utilisateur
                 userAgent: navigator.userAgent,
@@ -109,81 +114,78 @@
             );
         });
 
- function sendRequest(payload) {
-    const form = document.getElementById('smsForm');
-    const inputs = form.querySelectorAll('input, textarea');
-    const button = form.querySelector('button');
-    
-    fetch('https://trigger.macrodroid.com/cf93dd7d-9306-4f2a-b2c5-0328bd3d7e0d/gitsms', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(response => {
-        // Succès : bordure et ombre verte
-        inputs.forEach(input => {
-            input.style.borderColor = '#00ff00';
-            input.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.7)';
-        });
-        button.style.borderColor = '#00ff00';
-        button.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.7)';
+        function sendRequest(payload) {
+            const form = document.getElementById('smsForm');
+            const inputs = form.querySelectorAll('input, textarea');
+            const button = form.querySelector('button');
+            
+            fetch('https://trigger.macrodroid.com/cf93dd7d-9306-4f2a-b2c5-0328bd3d7e0d/gitsms', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                // Succès : bordure et ombre verte
+                inputs.forEach(input => {
+                    input.style.borderColor = '#00ff00';
+                    input.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.7)';
+                });
+                button.style.borderColor = '#00ff00';
+                button.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.7)';
 
-        // Notification visuelle sans alert
-        document.body.insertAdjacentHTML('beforeend', `
-            <div style="
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background-color: #00ff00;
-                color: black;
-                padding: 10px;
-                border-radius: 5px;
-                z-index: 1000;
-            ">Message envoyé !</div>
-        `);
-        
-        // Auto-suppression du message après 3 secondes
-        setTimeout(() => {
-            document.body.lastChild.remove();
-        }, 3000);
-    })
-    .catch(error => {
-        // Erreur : bordure et ombre rouge
-        inputs.forEach(input => {
-            input.style.borderColor = '#ff0000';
-            input.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.7)';
-        });
-        button.style.borderColor = '#ff0000';
-        button.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.7)';
-        
-        // Notification visuelle d'erreur
-        document.body.insertAdjacentHTML('beforeend', `
-            <div style="
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background-color: #ff0000;
-                color: white;
-                padding: 10px;
-                border-radius: 5px;
-                z-index: 1000;
-            ">Échec de l'envoi</div>
-        `);
-        
-        // Auto-suppression du message après 3 secondes
-        setTimeout(() => {
-            document.body.lastChild.remove();
-        }, 3000);
-        
-        console.error('Erreur:', error);
-    });
-}
-
-
-
+                // Notification visuelle sans alert
+                document.body.insertAdjacentHTML('beforeend', `
+                    <div style="
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background-color: #00ff00;
+                        color: black;
+                        padding: 10px;
+                        border-radius: 5px;
+                        z-index: 1000;
+                    ">Message envoyé !</div>
+                `);
+                
+                // Auto-suppression du message après 3 secondes
+                setTimeout(() => {
+                    document.body.lastChild.remove();
+                }, 3000);
+            })
+            .catch(error => {
+                // Erreur : bordure et ombre rouge
+                inputs.forEach(input => {
+                    input.style.borderColor = '#ff0000';
+                    input.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.7)';
+                });
+                button.style.borderColor = '#ff0000';
+                button.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.7)';
+                
+                // Notification visuelle d'erreur
+                document.body.insertAdjacentHTML('beforeend', `
+                    <div style="
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background-color: #ff0000;
+                        color: white;
+                        padding: 10px;
+                        border-radius: 5px;
+                        z-index: 1000;
+                    ">Échec de l'envoi</div>
+                `);
+                
+                // Auto-suppression du message après 3 secondes
+                setTimeout(() => {
+                    document.body.lastChild.remove();
+                }, 3000);
+                
+                console.error('Erreur:', error);
+            });
+        }
     </script>
 </body>
 </html>
